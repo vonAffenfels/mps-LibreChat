@@ -47,7 +47,7 @@ Für strategische Fragen zur Nutzung und Governance von KI-Systemen ist das **KI
 ## Weitere Informationen
 
 - [Datenschutzerklärung](#datenschutz)
-- [Nutzungsrichtlinie](#nutzungsrichtlinie)
+- [Nutzungsrichtlinie](/legal/usage-policy)
 
 ---
 

@@ -28,6 +28,7 @@ import { Banner } from '~/components/Banners';
 export default function Root() {
   const [showTerms, setShowTerms] = useState(false);
   const [showImpressum, setShowImpressum] = useState(false);
+  const [showUsagePolicy, setShowUsagePolicy] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(0);
   const [navVisible, setNavVisible] = useState(() => {
     const savedNavVisible = localStorage.getItem('navVisible');
@@ -38,8 +39,12 @@ export default function Root() {
   const localize = useLocalize();
   const { isAuthenticated, logout } = useAuthContext();
   const handleImpressumClose = useModalNavigation('/legal/imprint');
+  const handleUsagePolicyClose = useModalNavigation('/legal/usage-policy');
   const { content: impressumContent, loadContent: loadImpressum } = useStaticContent(
     '/static/imprint.md',
+  );
+  const { content: usagePolicyContent, loadContent: loadUsagePolicy } = useStaticContent(
+    '/static/usage-policy.md',
   );
 
   // Global health check - runs once per authenticated session
@@ -69,6 +74,14 @@ export default function Root() {
       loadImpressum();
     }
   }, [location.pathname, loadImpressum]);
+
+  // Check if URL is /legal/usage-policy and open modal
+  useEffect(() => {
+    if (location.pathname === '/legal/usage-policy') {
+      setShowUsagePolicy(true);
+      loadUsagePolicy();
+    }
+  }, [location.pathname, loadUsagePolicy]);
 
   const handleAcceptTerms = () => {
     setShowTerms(false);
@@ -116,6 +129,12 @@ export default function Root() {
             onOpenChange={(isOpen) => handleImpressumClose(isOpen, setShowImpressum)}
             title={localize('com_nav_impressum')}
             modalContent={impressumContent}
+          />
+          <StaticContentModal
+            open={showUsagePolicy}
+            onOpenChange={(isOpen) => handleUsagePolicyClose(isOpen, setShowUsagePolicy)}
+            title={localize('com_nav_usage_policy')}
+            modalContent={usagePolicyContent}
           />
         </AssistantsMapContext.Provider>
       </FileMapContext.Provider>

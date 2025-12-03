@@ -90,6 +90,14 @@ function AccountSettings() {
         </Select.SelectItem>
         <Select.SelectItem
           value=""
+          onClick={() => navigate('/legal/usage-policy')}
+          className="select-item text-sm"
+        >
+          <LinkIcon aria-hidden="true" />
+          {localize('com_nav_usage_policy')}
+        </Select.SelectItem>
+        <Select.SelectItem
+          value=""
           onClick={() => setShowSettings(true)}
           className="select-item text-sm"
         >
