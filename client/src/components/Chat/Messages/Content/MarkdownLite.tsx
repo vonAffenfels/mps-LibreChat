@@ -9,10 +9,19 @@ import type { PluggableList } from 'unified';
 import { code, codeNoExecution, a, p, img } from './MarkdownComponents';
 import { CodeBlockProvider, ArtifactProvider } from '~/Providers';
 import MarkdownErrorBoundary from './MarkdownErrorBoundary';
+import MarkdownContext from './MarkdownContext';
 import { langSubset } from '~/utils';
 
 const MarkdownLite = memo(
-  ({ content = '', codeExecution = true }: { content?: string; codeExecution?: boolean }) => {
+  ({
+    content = '',
+    codeExecution = true,
+    useInternalNavigation = false,
+  }: {
+    content?: string;
+    codeExecution?: boolean;
+    useInternalNavigation?: boolean;
+  }) => {
     const rehypePlugins: PluggableList = [
       [rehypeKatex],
       [
@@ -29,29 +38,31 @@ const MarkdownLite = memo(
       <MarkdownErrorBoundary content={content} codeExecution={codeExecution}>
         <ArtifactProvider>
           <CodeBlockProvider>
-            <ReactMarkdown
-              remarkPlugins={[
+            <MarkdownContext.Provider value={{ useInternalNavigation }}>
+              <ReactMarkdown
+                remarkPlugins={[
+                  /** @ts-ignore */
+                  supersub,
+                  remarkGfm,
+                  [remarkMath, { singleDollarTextMath: false }],
+                ]}
                 /** @ts-ignore */
-                supersub,
-                remarkGfm,
-                [remarkMath, { singleDollarTextMath: false }],
-              ]}
-              /** @ts-ignore */
-              rehypePlugins={rehypePlugins}
-              // linkTarget="_new"
-              components={
-                {
-                  code: codeExecution ? code : codeNoExecution,
-                  a,
-                  p,
-                  img,
-                } as {
-                  [nodeType: string]: React.ElementType;
+                rehypePlugins={rehypePlugins}
+                // linkTarget="_new"
+                components={
+                  {
+                    code: codeExecution ? code : codeNoExecution,
+                    a,
+                    p,
+                    img,
+                  } as {
+                    [nodeType: string]: React.ElementType;
+                  }
                 }
-              }
-            >
-              {content}
-            </ReactMarkdown>
+              >
+                {content}
+              </ReactMarkdown>
+            </MarkdownContext.Provider>
           </CodeBlockProvider>
         </ArtifactProvider>
       </MarkdownErrorBoundary>

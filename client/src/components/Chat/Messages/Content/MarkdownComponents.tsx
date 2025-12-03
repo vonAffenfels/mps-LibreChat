@@ -1,4 +1,5 @@
 import React, { memo, useMemo, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { useToastContext } from '@librechat/client';
 import { PermissionTypes, Permissions, apiBaseUrl } from 'librechat-data-provider';
@@ -8,6 +9,7 @@ import { useFileDownload } from '~/data-provider';
 import { useCodeBlockContext } from '~/Providers';
 import { handleDoubleClick } from '~/utils';
 import { useLocalize } from '~/hooks';
+import { useMarkdownContext } from './MarkdownContext';
 import store from '~/store';
 
 type TCodeProps = {
@@ -79,6 +81,8 @@ export const a: React.ElementType = memo(({ href, children }: TAnchorProps) => {
   const user = useRecoilValue(store.user);
   const { showToast } = useToastContext();
   const localize = useLocalize();
+  const navigate = useNavigate();
+  const { useInternalNavigation } = useMarkdownContext();
 
   const {
     file_id = '',
@@ -98,9 +102,27 @@ export const a: React.ElementType = memo(({ href, children }: TAnchorProps) => {
   }, [user?.id, href]);
 
   const { refetch: downloadFile } = useFileDownload(user?.id ?? '', file_id);
-  const props: { target?: string; onClick?: React.MouseEventHandler } = { target: '_new' };
+
+  // Check if this is an internal link AND we should use internal navigation
+  const isInternalLink = href.startsWith('/');
+  const shouldUseInternalNav = isInternalLink && useInternalNavigation;
+
+  // For internal links with the flag enabled, use navigate
+  // Otherwise use the old behavior (target="_new")
+  const props: { target?: string; onClick?: React.MouseEventHandler } = shouldUseInternalNav
+    ? {}
+    : { target: '_new' };
 
   if (!file_id || !filename) {
+    // Handle internal navigation only when flag is enabled
+    if (shouldUseInternalNav) {
+      const handleInternalClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        navigate(href);
+      };
+      props.onClick = handleInternalClick;
+    }
+
     return (
       <a href={href} {...props}>
         {children}

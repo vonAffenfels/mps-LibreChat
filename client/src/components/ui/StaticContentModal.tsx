@@ -45,7 +45,7 @@ const StaticContentModal = ({
           >
             <div className="prose dark:prose-invert w-full max-w-none !text-text-primary">
               {content !== '' ? (
-                <MarkdownLite content={content} />
+                <MarkdownLite content={content} useInternalNavigation={true} />
               ) : (
                 <p>{localize('com_ui_no_content')}</p>
               )}
