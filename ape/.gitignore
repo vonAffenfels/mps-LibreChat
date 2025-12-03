@@ -1,0 +1,5 @@
+# Auto-generated .gitignore
+# Generated target files from template processing
+
+# Generated target file (from template processing)
+docker-compose.override.yml

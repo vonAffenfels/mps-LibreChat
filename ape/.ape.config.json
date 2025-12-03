@@ -1,0 +1,6 @@
+{
+    "secrets": {
+        "turbo": "secrets/turbo.secrets.json"
+    },
+    "team": "node"
+}
