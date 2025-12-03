@@ -530,6 +530,12 @@ export const interfaceSchema = z
       })
       .optional(),
     termsOfService: termsOfServiceSchema.optional(),
+    impressum: z
+      .object({
+        externalUrl: z.string().optional(),
+        openNewTab: z.boolean().optional(),
+      })
+      .optional(),
     customWelcome: z.string().optional(),
     mcpServers: mcpServersSchema.optional(),
     endpointsMenu: z.boolean().optional(),
@@ -1542,6 +1548,10 @@ export enum SettingsTabValues {
    * Tab for Account Settings
    */
   ACCOUNT = 'account',
+  /**
+   * Tab for Legal & Privacy
+   */
+  LEGAL = 'legal',
   /**
    * Chat input commands
    */

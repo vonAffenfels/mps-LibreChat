@@ -127,6 +127,10 @@ export const router = createBrowserRouter(
                 </MarketplaceProvider>
               ),
             },
+            {
+              path: 'legal/imprint',
+              element: <ChatRoute />,
+            },
           ],
         },
       ],

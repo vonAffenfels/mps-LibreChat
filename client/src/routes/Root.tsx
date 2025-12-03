@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import type { ContextType } from '~/common';
 import {
   useSearchEnabled,
@@ -7,6 +7,9 @@ import {
   useAuthContext,
   useAgentsMap,
   useFileMap,
+  useLocalize,
+  useModalNavigation,
+  useStaticContent,
 } from '~/hooks';
 import {
   PromptGroupsProvider,
@@ -17,19 +20,27 @@ import {
 } from '~/Providers';
 import { useUserTermsQuery, useGetStartupConfig } from '~/data-provider';
 import { TermsAndConditionsModal } from '~/components/ui';
+import StaticContentModal from '~/components/ui/StaticContentModal';
 import { Nav, MobileNav } from '~/components/Nav';
 import { useHealthCheck } from '~/data-provider';
 import { Banner } from '~/components/Banners';
 
 export default function Root() {
   const [showTerms, setShowTerms] = useState(false);
+  const [showImpressum, setShowImpressum] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(0);
   const [navVisible, setNavVisible] = useState(() => {
     const savedNavVisible = localStorage.getItem('navVisible');
     return savedNavVisible !== null ? JSON.parse(savedNavVisible) : true;
   });
 
+  const location = useLocation();
+  const localize = useLocalize();
   const { isAuthenticated, logout } = useAuthContext();
+  const handleImpressumClose = useModalNavigation('/legal/imprint');
+  const { content: impressumContent, loadContent: loadImpressum } = useStaticContent(
+    '/static/impressum.md',
+  );
 
   // Global health check - runs once per authenticated session
   useHealthCheck(isAuthenticated);
@@ -50,6 +61,14 @@ export default function Root() {
       setShowTerms(!termsData.termsAccepted);
     }
   }, [termsData]);
+
+  // Check if URL is /legal/imprint and open modal
+  useEffect(() => {
+    if (location.pathname === '/legal/imprint') {
+      setShowImpressum(true);
+      loadImpressum();
+    }
+  }, [location.pathname, loadImpressum]);
 
   const handleAcceptTerms = () => {
     setShowTerms(false);
@@ -92,6 +111,12 @@ export default function Root() {
               modalContent={config.interface.termsOfService.modalContent}
             />
           )}
+          <StaticContentModal
+            open={showImpressum}
+            onOpenChange={(isOpen) => handleImpressumClose(isOpen, setShowImpressum)}
+            title={localize('com_nav_impressum')}
+            modalContent={impressumContent}
+          />
         </AssistantsMapContext.Provider>
       </FileMapContext.Provider>
     </SetConvoProvider>
