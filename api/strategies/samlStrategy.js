@@ -183,6 +183,10 @@ async function setupSaml() {
       idpCert: getCertificateContent(process.env.SAML_CERT),
       wantAssertionsSigned: process.env.SAML_USE_AUTHN_RESPONSE_SIGNED === 'true' ? false : true,
       wantAuthnResponseSigned: process.env.SAML_USE_AUTHN_RESPONSE_SIGNED === 'true' ? true : false,
+
+      // DTM-4555 // AADSTS75011: Authentication method 'Unspecified, SingleFactorFederated' by which the user authenticated with the service doesn't match requested authentication method 'Password, ProtectedTransport'.
+      disableRequestedAuthnContext: true,
+      authnContext: []
     };
 
     passport.use(
