@@ -18,6 +18,11 @@ export default defineConfig(({ command }) => ({
     host: process.env.HOST || 'localhost',
     port: process.env.PORT && Number(process.env.PORT) || 3090,
     strictPort: false,
+    watch: {
+      // Enable polling for Docker environments where file watching doesn't work
+      usePolling: true,
+      interval: 1000,
+    },
     proxy: {
       '/api': {
         target: backendURL,
