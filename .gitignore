@@ -169,6 +169,3 @@ coordination/orchestration/*
 claude-flow
 # Removed Windows wrapper files per user request
 hive-mind-prompt-*.txt
-
-# Generated target file (from template processing)
-litellm-config.yaml

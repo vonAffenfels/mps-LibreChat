@@ -3,3 +3,6 @@
 
 # Generated target file (from template processing)
 docker-compose.override.yml
+
+# Generated target file (from template processing)
+litellm-config.yaml
