@@ -39,7 +39,7 @@ export default function Root() {
   const { isAuthenticated, logout } = useAuthContext();
   const handleImpressumClose = useModalNavigation('/legal/imprint');
   const { content: impressumContent, loadContent: loadImpressum } = useStaticContent(
-    '/static/impressum.md',
+    '/static/imprint.md',
   );
 
   // Global health check - runs once per authenticated session
