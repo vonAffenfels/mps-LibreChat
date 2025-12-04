@@ -386,9 +386,15 @@ Located in `api/strategies/`:
 
 ### Adding Translations
 
-1. Add keys to `client/src/locales/en-US.json`
-2. Use translation service (locize) or manually add to other language files
-3. Access via `useLocalize()` hook: `const { t } = useLocalize(); t('your.key')`
+1. Add keys to `client/src/locales/en/translation.json` (English)
+2. Add keys to `client/src/locales/de/translation.json` (German)
+3. Use translation service (locize) or manually add to other language files in their respective directories
+4. Access via `useLocalize()` hook: `const localize = useLocalize(); localize('your.key')`
+
+**Important**:
+- Localization files are organized in language directories: `en/`, `de/`, `fr/`, etc.
+- Each directory contains a `translation.json` file
+- Keys follow dot notation: `com_nav_*`, `com_ui_*`, `com_error_*`
 
 ### File Upload Handling
 
@@ -551,6 +557,225 @@ This pattern is used for legal documents (Privacy Policy, Usage Policy) where yo
 **Examples in Codebase**:
 - Privacy Policy (TURBO-29): `client/src/routes/Root.tsx:32-135`
 - Usage Policy (TURBO-32): Similar pattern implementation
+
+### FAQ Page Pattern (Single-Page with JSON Config)
+
+This pattern is used for FAQ pages where content needs to be easily maintainable via JSON configuration with accordion UI for better UX.
+
+**Use Case**: Display comprehensive FAQ with collapsible Q&A items, organized sections, and navigation helpers.
+
+**Architecture**:
+- **JSON Config**: All content in `client/public/static/faq-config.json`
+- **Single Route**: Direct page at `/faq` (no modal, no two-tier)
+- **Accordion UI**: Radix UI Accordion for collapsible items
+- **Navigation**: Section jump links + "Back to top" buttons
+
+**Implementation Steps**:
+
+1. **Create JSON Configuration File**
+   ```json
+   // client/public/static/faq-config.json
+   {
+     "sections": [
+       {
+         "id": "section-id",
+         "title": "Section Title",
+         "questions": [
+           {
+             "question": "Question text?",
+             "answer": "Answer text."
+           }
+         ]
+       }
+     ]
+   }
+   ```
+   **Note**: Sections have `id` field, questions do NOT have `id` field.
+
+2. **Create FAQ Component with Radix UI Accordion**
+   ```typescript
+   // client/src/components/FAQ/FAQPage.tsx
+   import * as Accordion from '@radix-ui/react-accordion';
+   import { ChevronDown, ChevronUp } from 'lucide-react';
+   import { useLocalize } from '~/hooks';
+
+   export default function FAQPage() {
+     const localize = useLocalize();
+     const [faqData, setFaqData] = useState<FAQConfig | null>(null);
+
+     // Fetch JSON config
+     useEffect(() => {
+       const loadFAQ = async () => {
+         const response = await fetch('/static/faq-config.json');
+         const data = await response.json();
+         setFaqData(data);
+       };
+       loadFAQ();
+     }, []);
+
+     // Scroll functions using element.scrollIntoView
+     const scrollToTop = () => {
+       const topElement = document.getElementById('top');
+       if (topElement) {
+         topElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }
+     };
+
+     const scrollToSection = (sectionId: string) => {
+       const element = document.getElementById(sectionId);
+       if (element) {
+         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }
+     };
+
+     return (
+       <div className="flex h-screen flex-col items-center overflow-y-auto">
+         <div id="top" className="w-full max-w-4xl">
+           {/* Section Jump Links */}
+           <nav aria-label={localize('com_ui_faq_section_nav')}>
+             {faqData.sections.map((section) => (
+               <button onClick={() => scrollToSection(`section-${section.id}`)}>
+                 {section.title}
+               </button>
+             ))}
+           </nav>
+
+           {/* FAQ Sections with Accordion */}
+           {faqData.sections.map((section) => (
+             <section
+               id={`section-${section.id}`}
+               aria-labelledby={`section-heading-${section.id}`}
+             >
+               <h2 id={`section-heading-${section.id}`}>{section.title}</h2>
+
+               <Accordion.Root type="single" collapsible>
+                 {section.questions.map((item, index) => (
+                   <Accordion.Item key={index} value={`${section.id}-${index}`}>
+                     <Accordion.Header>
+                       <Accordion.Trigger>
+                         {item.question}
+                         <ChevronDown aria-hidden="true" />
+                       </Accordion.Trigger>
+                     </Accordion.Header>
+                     <Accordion.Content>
+                       {item.answer}
+                     </Accordion.Content>
+                   </Accordion.Item>
+                 ))}
+               </Accordion.Root>
+
+               {/* Back to Top Button */}
+               <button onClick={scrollToTop}>
+                 {localize('com_ui_faq_back_to_top')}
+               </button>
+             </section>
+           ))}
+         </div>
+       </div>
+     );
+   }
+   ```
+
+3. **Add Route**
+   ```typescript
+   // client/src/routes/index.tsx
+   import { FAQPage } from '~/components/FAQ';
+
+   {
+     path: 'faq',
+     element: <FAQPage />,
+   }
+   ```
+
+4. **Add Navigation Links**
+   ```typescript
+   // In AccountSettings.tsx or Legal.tsx
+   <Select.SelectItem onClick={() => navigate('/faq')}>
+     <LinkIcon aria-hidden="true" />
+     {localize('com_nav_faq')}
+   </Select.SelectItem>
+   ```
+
+5. **Add Localization Keys**
+   ```json
+   // en/translation.json
+   {
+     "com_nav_faq": "FAQ",
+     "com_ui_faq_title": "Frequently Asked Questions",
+     "com_ui_faq_loading": "Loading FAQ...",
+     "com_ui_faq_error": "Failed to load FAQ",
+     "com_ui_faq_section_nav": "FAQ Sections Navigation",
+     "com_ui_faq_jump_to_section": "Jump to Section",
+     "com_ui_faq_jump_to": "Jump to",
+     "com_ui_faq_back_to_top": "Back to Top"
+   }
+
+   // de/translation.json
+   {
+     "com_nav_faq": "FAQ",
+     "com_ui_faq_title": "Häufig gestellte Fragen",
+     "com_ui_faq_loading": "FAQ wird geladen...",
+     "com_ui_faq_error": "FAQ konnte nicht geladen werden",
+     "com_ui_faq_section_nav": "FAQ Sektionen Navigation",
+     "com_ui_faq_jump_to_section": "Zu Sektion springen",
+     "com_ui_faq_jump_to": "Springe zu",
+     "com_ui_faq_back_to_top": "Zurück nach oben"
+   }
+   ```
+
+6. **Ensure Accordion Animations in Tailwind Config**
+   The accordion animations should already be configured in `client/tailwind.config.cjs`:
+   ```javascript
+   keyframes: {
+     'accordion-down': {
+       from: { height: 0 },
+       to: { height: 'var(--radix-accordion-content-height)' },
+     },
+     'accordion-up': {
+       from: { height: 'var(--radix-accordion-content-height)' },
+       to: { height: 0 },
+     },
+   },
+   animation: {
+     'accordion-down': 'accordion-down 0.2s ease-out',
+     'accordion-up': 'accordion-up 0.2s ease-out',
+   }
+   ```
+
+**Key Characteristics**:
+- JSON-driven content for easy maintenance
+- Sections have IDs for jump links, questions do NOT
+- Single route pattern (no modal complexity)
+- `scrollIntoView()` for smooth scrolling (works with `h-screen` containers)
+- Full accessibility with semantic HTML, ARIA labels, and keyboard navigation
+- Responsive grid layout for section jump links
+- "Back to top" after each section + final button at end
+
+**Accessibility Features**:
+- `role="status"` with `aria-live="polite"` for loading state
+- `role="alert"` with `aria-live="assertive"` for error state
+- `aria-label` on all navigation elements and buttons
+- `aria-labelledby` linking sections to their headings
+- Semantic HTML: `<nav>`, `<section>`, `<h1>`, `<h2>`
+- `aria-hidden="true"` on decorative icons
+- Visible focus indicators with `focus:ring-2`
+- Radix UI Accordion provides native keyboard support
+
+**When to Use This Pattern**:
+- Content FAQ pages with multiple organized sections
+- Content needs to be easily editable without code changes
+- Users need quick navigation between sections
+- Single source of truth for Q&A content
+- No need for teaser/summary view
+
+**When NOT to Use**:
+- For legal documents that need two-tier pattern (use Two-Tier Modal Pattern instead)
+- For simple 3-5 questions (consider inline content)
+- For dynamic/user-generated content (use database instead)
+
+**Examples in Codebase**:
+- FAQ Page (TURBO-38): `client/src/components/FAQ/FAQPage.tsx`
+- JSON Config: `client/public/static/faq-config.json`
 
 ## Critical Files
 
