@@ -111,6 +111,14 @@ function AccountSettings() {
         </Select.SelectItem>
         <Select.SelectItem
           value=""
+          onClick={() => navigate('/faq')}
+          className="select-item text-sm"
+        >
+          <LinkIcon aria-hidden="true" />
+          {localize('com_nav_faq')}
+        </Select.SelectItem>
+        <Select.SelectItem
+          value=""
           onClick={() => setShowSettings(true)}
           className="select-item text-sm"
         >

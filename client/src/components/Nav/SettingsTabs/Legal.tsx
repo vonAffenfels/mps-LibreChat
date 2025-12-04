@@ -41,6 +41,15 @@ export default function Legal() {
           <span className="font-light">{localize('com_nav_privacy_policy')}</span>
         </button>
       </div>
+      <div className="pb-3">
+        <button
+          onClick={() => navigate('/faq')}
+          className="flex items-center space-x-2 text-text-primary transition-colors hover:text-text-secondary"
+        >
+          <LinkIcon aria-hidden="true" />
+          <span className="font-light">{localize('com_nav_faq')}</span>
+        </button>
+      </div>
     </div>
   );
 }

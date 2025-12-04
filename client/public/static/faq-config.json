@@ -1,0 +1,96 @@
+{
+  "sections": [
+    {
+      "id": "general",
+      "title": "Allgemeine Fragen",
+      "questions": [
+        {
+          "question": "Was ist der Unterschied zwischen TurBo und LibreChat?",
+          "answer": "TurBo basiert auf LibreChat, verfügt jedoch über umfangreiche Anpassungen und Funktionen, die speziell für unsere Verwendung entwickelt wurden."
+        },
+        {
+          "question": "Ist TurBo Open Source?",
+          "answer": "Basierend auf dem Open Source LibreChat, ist TurBo selbst nicht Open Source sondern Closed Source. Wir möchten zu einem späteren Zeitpunkt unsere Anpassungen jedoch zur Verfügung stellen."
+        },
+        {
+          "question": "Ist der Code auf Github?",
+          "answer": "Der LibreChat Code ist öffentlich auf Github. Unsere Anpassungen sind jedoch auf unserem internen Gitlab Server zu finden."
+        },
+        {
+          "question": "Ist TurBo auf meinem Rechner gespeichert?",
+          "answer": "TurBo ist eine webbasierte Anwendung und nicht direkt auf deinem Rechner installiert. Allerdings werden Teile der Website auf deinem Rechner gespeichert um Ladezeiten zu verringern. Es werden keine sensiblen Informationen dabei auf dem Rechner gespeichert."
+        }
+      ]
+    },
+    {
+      "id": "agents",
+      "title": "Agenten",
+      "questions": [
+        {
+          "question": "Wo finde ich weitere Informationen über die verschiedenen Agenten?",
+          "answer": "Die Agenten können in der Agenten Suche vor dem Start gelesen werden um Informationen wie zum Beispiel den Startsatz zu finden."
+        },
+        {
+          "question": "Wie kann ich einen Agenten finden, der meiner Aufgabe entspricht?",
+          "answer": "Über das Menü kann nach Agenten gesucht und gefiltert werden. Anschließend kann ein Blick auf die Beschreibung nützlich sein, um passende Agenten für die eigene Aufgabe zu finden."
+        },
+        {
+          "question": "Wie kann man einen falschen Agenten korrigieren?",
+          "answer": "Lösche die letzte User Eingabe und sende die Nachricht erneut. Der Agent sollte nun wieder korrekt arbeiten."
+        },
+        {
+          "question": "Was ist ein Agent?",
+          "answer": "Ein Agent hat Zugriff auf spezielle Werkzeuge, um eine Aufgabe zu erledigen. Diese Werkzeuge geben dem Agenten zusätzliche Fähigkeiten, wie z.B. Zugriff auf Datenbanken, das Erstellen von Präsentationen oder das Durchsuchen des Internets."
+        },
+        {
+          "question": "Wie verhält sich der Agent gegenüber hochgeladenen Dateien?",
+          "answer": "Der Agent kann hochgeladene Dateien lesen und darauf reagieren. Hierbei sind zum Beispiel Word, PDF und CSV Dateien möglich."
+        }
+      ]
+    },
+    {
+      "id": "usage",
+      "title": "Verwendung & Support",
+      "questions": [
+        {
+          "question": "Wie kann ich auf vorangegangene Chats zugreifen?",
+          "answer": "In der linken Leiste können vergangene Unterhaltungen angezeigt werden. Nach einem Klick auf eine solche Unterhaltung werden diese wieder angezeigt. Es kann nur mit dem zuletzt verwendeten Agenten weiter gearbeitet werden."
+        },
+        {
+          "question": "Ist es möglich in TurBo Code zu schreiben?",
+          "answer": "Ja, über verschiedene Agenten kann unter anderem Typescript Code programmiert werden."
+        },
+        {
+          "question": "Ich brauche ganz dringend Ergebnisse",
+          "answer": "Am besten nutzt du für zeit-kritische Aufgaben die Agenten mit der ChatGPT-4o, Claude 3.5 Sonnet oder Claude 3.5 Haiku KIs. Diese gehören zu den schnellsten und besten KIs die derzeit verfügbar sind, dadurch aber auch zu den Teuersten. Denke immer daran, dass der preiswertere Claude 3.5 Haiku für die meisten Aufgaben völlig ausreichend ist."
+        },
+        {
+          "question": "Ich finde nicht den richtigen Agenten für meine Zwecke, wen kann ich kontaktieren?",
+          "answer": "Du kannst dich mit Anregungen und Problemen jederzeit an das Team turbo_admins wenden."
+        },
+        {
+          "question": "Wo kann ich technische Hilfe bekommen?",
+          "answer": "Der turbo_admins Chat kann für technische Probleme und Fragen genutzt werden."
+        },
+        {
+          "question": "Wo kann ich nach Hilfe bei TurBo fragen?",
+          "answer": "Kontaktiere turbo_admins über Teams mit deinem Problem."
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "title": "Datenzugriff & Sicherheit",
+      "questions": [
+        {
+          "question": "Kann ich mit TurBo auf interne Daten zugreifen?",
+          "answer": "Ja, über verschiedene Tools können interne Daten geladen und verarbeitet werden. Sei dir dabei immer über die Sensibilität deiner Daten bewusst und nutze am besten die entsprechenden Datensicherheitsagenten."
+        },
+        {
+          "question": "Wer ist für TurBo verantwortlich?",
+          "answer": "TurBo wird von der KI Abteilung im IT-Team gepflegt und gehört zum Projekt TURBO, Kontakt: turbo_admins"
+        }
+      ]
+    }
+  ]
+}
