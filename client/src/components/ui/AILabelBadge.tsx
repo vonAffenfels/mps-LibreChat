@@ -32,6 +32,11 @@ export default function AILabelBadge({
     navigate('/faq');
   };
 
+  const handleIncidentReportClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/incident-report');
+  };
+
   // Variant-specific styling
   const variantClasses = {
     default: 'flex items-center gap-2 rounded-lg border border-border-light bg-surface-primary px-3 py-2 text-sm',
@@ -70,27 +75,34 @@ export default function AILabelBadge({
     return badgeWithTooltip;
   }
 
-  // Footer variant with links
+  // Footer variant with links - now inline
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+    <>
       {badgeWithTooltip}
-      <div className="flex gap-3 text-xs text-text-secondary">
-        <button
-          onClick={handleUsagePolicyClick}
-          className="hover:text-text-primary transition-colors underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-border-xheavy"
-          aria-label={localize('com_nav_usage_policy')}
-        >
-          {localize('com_nav_usage_policy')}
-        </button>
-        <span aria-hidden="true">•</span>
-        <button
-          onClick={handleFAQClick}
-          className="hover:text-text-primary transition-colors underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-border-xheavy"
-          aria-label={localize('com_nav_faq')}
-        >
-          {localize('com_nav_faq')}
-        </button>
-      </div>
-    </div>
+      <span className="text-text-secondary" aria-hidden="true">•</span>
+      <button
+        onClick={handleUsagePolicyClick}
+        className="text-text-secondary hover:text-text-primary transition-colors underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-border-xheavy"
+        aria-label={localize('com_nav_usage_policy')}
+      >
+        {localize('com_nav_usage_policy')}
+      </button>
+      <span className="text-text-secondary" aria-hidden="true">•</span>
+      <button
+        onClick={handleFAQClick}
+        className="text-text-secondary hover:text-text-primary transition-colors underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-border-xheavy"
+        aria-label={localize('com_nav_faq')}
+      >
+        {localize('com_nav_faq')}
+      </button>
+      <span className="text-text-secondary" aria-hidden="true">•</span>
+      <button
+        onClick={handleIncidentReportClick}
+        className="text-text-secondary hover:text-text-primary transition-colors underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-border-xheavy"
+        aria-label={localize('com_nav_report_incident')}
+      >
+        {localize('com_nav_report_incident')}
+      </button>
+    </>
   );
 }

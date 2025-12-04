@@ -13,6 +13,7 @@ import AgentMarketplace from '~/components/Agents/Marketplace';
 import { OAuthSuccess, OAuthError } from '~/components/OAuth';
 import { AuthContextProvider } from '~/hooks/AuthContext';
 import { FAQPage } from '~/components/FAQ';
+import { IncidentReportPage } from '~/components/IncidentReport';
 import RouteErrorBoundary from './RouteErrorBoundary';
 import StartupLayout from './Layouts/Startup';
 import LoginLayout from './Layouts/Login';
@@ -143,6 +144,10 @@ export const router = createBrowserRouter(
             {
               path: 'faq',
               element: <FAQPage />,
+            },
+            {
+              path: 'incident-report',
+              element: <IncidentReportPage />,
             },
           ],
         },

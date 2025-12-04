@@ -1,0 +1,53 @@
+{
+  "incidents": [
+    {
+      "id": "data-breach",
+      "title": "Datenschutzpanne",
+      "icon": "🔒",
+      "description": "Unbefugte Verarbeitung, Verlust oder Offenlegung personenbezogener Daten",
+      "target": "https://intranet.motorpresse.de/datenschutz/panne-melden",
+      "targetType": "external",
+      "contact": "fschleid@motorpresse.de (Datenschutzkoordinatorin)"
+    },
+    {
+      "id": "security-incident",
+      "title": "Sicherheitsvorfall",
+      "icon": "🛡️",
+      "description": "Unbefugter Zugriff, Malware, DDoS, oder andere Angriffe",
+      "target": "security@motorpresse.de",
+      "targetType": "email",
+      "contact": "security@motorpresse.de (IT-Security)"
+    },
+    {
+      "id": "compliance-violation",
+      "title": "Compliance-Verstoß",
+      "icon": "⚖️",
+      "description": "Verstoß gegen Unternehmensrichtlinien oder gesetzliche Vorgaben",
+      "target": "compliance@motorpresse.de",
+      "targetType": "email",
+      "contact": "compliance@motorpresse.de (Legal)"
+    },
+    {
+      "id": "technical-issue",
+      "title": "Technisches Problem",
+      "icon": "🐛",
+      "description": "Systemausfälle, Performance-Probleme, oder Bugs",
+      "target": "support@motorpresse.de",
+      "targetType": "email",
+      "contact": "christian.kuttler@motorpresse.de (Application Owner)"
+    }
+  ],
+  "contacts": {
+    "emergency": {
+      "number": "+49 (0)711 182-0 (nur kritische Vorfälle, 24/7)"
+    }
+  },
+  "whistleblower": {
+    "url": "https://motorpresse.trusty.report/",
+    "description": "Anonyme Meldungen möglich"
+  },
+  "helpSection": {
+    "title": "Unsicher?",
+    "description": "Wenn Sie unsicher sind, welchen Vorfall-Typ Sie melden sollen, kontaktieren Sie uns gerne direkt:"
+  }
+}

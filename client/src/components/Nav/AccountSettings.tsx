@@ -2,7 +2,7 @@ import { useState, memo } from 'react';
 import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import * as Select from '@ariakit/react/select';
-import { FileText, LogOut } from 'lucide-react';
+import { FileText, LogOut, AlertTriangle, MessageSquareWarning } from 'lucide-react';
 import { LinkIcon, GearIcon, DropdownMenuSeparator, Avatar } from '@librechat/client';
 import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import FilesView from '~/components/Chat/Input/Files/FilesView';
@@ -117,6 +117,24 @@ function AccountSettings() {
           <LinkIcon aria-hidden="true" />
           {localize('com_nav_faq')}
         </Select.SelectItem>
+        <DropdownMenuSeparator />
+        <Select.SelectItem
+          value=""
+          onClick={() => navigate('/incident-report')}
+          className="select-item text-sm"
+        >
+          <AlertTriangle className="icon-md" aria-hidden="true" />
+          {localize('com_nav_report_incident')}
+        </Select.SelectItem>
+        <Select.SelectItem
+          value=""
+          onClick={() => window.open('https://motorpresse.trusty.report/', '_blank', 'noopener,noreferrer')}
+          className="select-item text-sm"
+        >
+          <MessageSquareWarning className="icon-md" aria-hidden="true" />
+          {localize('com_nav_whistleblower')}
+        </Select.SelectItem>
+        <DropdownMenuSeparator />
         <Select.SelectItem
           value=""
           onClick={() => setShowSettings(true)}

@@ -92,10 +92,9 @@ export default function Footer({ className }: { className?: string }) {
         }
         role="contentinfo"
       >
-        <div className="w-full">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           <AILabelBadge variant="footer" showLinks={true} />
-        </div>
-        <div className="flex items-center justify-center gap-2">
+          <div className="h-2 border-r-[1px] border-border-medium" />
           {footerElements.map((contentRender, index) => {
             const isLastElement = index === footerElements.length - 1;
             return (

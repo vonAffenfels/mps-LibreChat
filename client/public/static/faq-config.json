@@ -91,6 +91,28 @@
           "answer": "TurBo wird von der KI Abteilung im IT-Team gepflegt und gehört zum Projekt TURBO, Kontakt: turbo_admins"
         }
       ]
+    },
+    {
+      "id": "incident-response",
+      "title": "Incident Response & Support",
+      "questions": [
+        {
+          "question": "Wie melde ich einen Sicherheitsvorfall oder eine Datenschutzpanne?",
+          "answer": "TurBo bietet mehrere Meldekanäle: 1) Datenschutzpanne - Nutze das Intranet-Formular unter intranet.motorpresse.de/datenschutz/panne-melden oder kontaktiere fschleid@motorpresse.de (Datenschutzkoordinatorin). 2) Sicherheitsvorfall - Kontaktiere security@motorpresse.de (IT-Security). 3) Compliance-Verstoß - Kontaktiere compliance@motorpresse.de (Legal). 4) Technisches Problem - Kontaktiere support@motorpresse.de oder christian.kuttler@motorpresse.de (Application Owner). Für anonyme Meldungen steht das Trusty Whistleblower-System unter motorpresse.trusty.report zur Verfügung."
+        },
+        {
+          "question": "Was ist der Incident-Response-Prozess?",
+          "answer": "Der Incident-Response-Prozess folgt diesen Schritten: 1) Detection - Vorfall wird erkannt und gemeldet. 2) Triage - Einstufung der Schwere und Priorisierung. 3) Containment - Eindämmung des Vorfalls zur Schadensbegrenzung. 4) Recovery - Wiederherstellung des Normalbetriebs. 5) Post-Incident-Review (PIR) - Analyse und Lessons Learned. Bei kritischen Vorfällen erfolgt eine sofortige Eskalation an den Notfallkontakt: +49 (0)711 182-0 (24/7). Alle Prozesse entsprechen den Anforderungen der DSGVO Art. 33/34 (Meldepflicht bei Datenschutzverletzungen)."
+        },
+        {
+          "question": "Was sind die Reaktionszeiten (SLAs) für Vorfallsmeldungen?",
+          "answer": "Die Reaktionszeiten (SLAs) variieren je nach Schweregrad: Kritische Vorfälle (z.B. aktiver Datenverlust, Systemausfall) - Sofortige Reaktion innerhalb von 15 Minuten, 24/7 Verfügbarkeit. Hohe Priorität (z.B. potenzielle Datenschutzpanne) - Reaktion innerhalb von 2 Stunden während Geschäftszeiten. Mittlere Priorität (z.B. Compliance-Verstoß) - Reaktion innerhalb von 1 Werktag. Niedrige Priorität (z.B. technische Probleme) - Reaktion innerhalb von 3 Werktagen. Bei Unsicherheit über die Priorität kontaktiere bitte direkt einen der oben genannten Ansprechpartner."
+        },
+        {
+          "question": "Wie funktioniert die RACI-Matrix für Incident Response?",
+          "answer": "Die RACI-Matrix definiert Verantwortlichkeiten: Datenschutzpanne - Responsible: Datenschutzkoordinatorin (fschleid@motorpresse.de), Accountable: DSB (Dr. Arndt Glienke), Consulted: IT-Security, Legal, Informed: Betroffene Mitarbeiter. Sicherheitsvorfall - Responsible: IT-Security (security@motorpresse.de), Accountable: IT-Leitung, Consulted: Datenschutz, Legal, Informed: Application Owner, Betroffene Teams. Compliance-Verstoß - Responsible: Legal (compliance@motorpresse.de), Accountable: Rechtsabteilung, Consulted: Datenschutz, IT-Security, Informed: Management. Technisches Problem - Responsible: Application Owner (christian.kuttler@motorpresse.de), Accountable: IT-Leitung, Consulted: Entwicklerteam, Informed: Nutzer. RACI bedeutet: R=Responsible (durchführend), A=Accountable (verantwortlich), C=Consulted (konsultiert), I=Informed (informiert)."
+        }
+      ]
     }
   ]
 }
