@@ -592,9 +592,11 @@ This pattern is used for FAQ pages where content needs to be easily maintainable
    ```
    **Note**: Sections have `id` field, questions do NOT have `id` field.
 
-2. **Create FAQ Component with Radix UI Accordion**
+2. **Create FAQ Component with Radix UI Accordion and ReactMarkdown**
    ```typescript
    // client/src/components/FAQ/FAQPage.tsx
+   import React, { useState, useEffect } from 'react';
+   import ReactMarkdown from 'react-markdown';
    import * as Accordion from '@radix-ui/react-accordion';
    import { ChevronDown, ChevronUp } from 'lucide-react';
    import { useLocalize } from '~/hooks';
@@ -658,7 +660,24 @@ This pattern is used for FAQ pages where content needs to be easily maintainable
                        </Accordion.Trigger>
                      </Accordion.Header>
                      <Accordion.Content>
-                       {item.answer}
+                       <div className="px-4 pb-4 pt-2 text-text-secondary">
+                         <ReactMarkdown
+                           components={{
+                             p: ({ node: _n, ...props }) => (
+                               <p className="mb-4 last:mb-0" {...props} />
+                             ),
+                             ul: ({ node: _n, ...props }) => (
+                               <ul className="mb-4 ml-4 list-disc space-y-2 last:mb-0" {...props} />
+                             ),
+                             ol: ({ node: _n, ...props }) => (
+                               <ol className="mb-4 ml-4 list-decimal space-y-2 last:mb-0" {...props} />
+                             ),
+                             li: ({ node: _n, ...props }) => <li className="ml-2" {...props} />,
+                           }}
+                         >
+                           {item.answer}
+                         </ReactMarkdown>
+                       </div>
                      </Accordion.Content>
                    </Accordion.Item>
                  ))}
@@ -747,9 +766,16 @@ This pattern is used for FAQ pages where content needs to be easily maintainable
 - Sections have IDs for jump links, questions do NOT
 - Single route pattern (no modal complexity)
 - `scrollIntoView()` for smooth scrolling (works with `h-screen` containers)
+- **ReactMarkdown for answer rendering** - enables proper formatting with `\n\n` for paragraphs, lists, and other markdown
 - Full accessibility with semantic HTML, ARIA labels, and keyboard navigation
 - Responsive grid layout for section jump links
 - "Back to top" after each section + final button at end
+
+**Content Formatting**:
+- Use `\n\n` in JSON for paragraph breaks (rendered by ReactMarkdown)
+- Numbered lists: `1) Item`, `2) Item` format
+- Bullet lists: Standard markdown syntax
+- **Important**: Without ReactMarkdown, plain text rendering will show `\n\n` literally instead of creating line breaks
 
 **Accessibility Features**:
 - `role="status"` with `aria-live="polite"` for loading state
@@ -774,8 +800,208 @@ This pattern is used for FAQ pages where content needs to be easily maintainable
 - For dynamic/user-generated content (use database instead)
 
 **Examples in Codebase**:
-- FAQ Page (TURBO-38): `client/src/components/FAQ/FAQPage.tsx`
+- FAQ Page (TURBO-38, TURBO-42): `client/src/components/FAQ/FAQPage.tsx`
 - JSON Config: `client/public/static/faq-config.json`
+
+### Landing Page with JSON Config Pattern (Incident Reports, Action Cards)
+
+This pattern is used for landing pages that display action cards or options loaded from JSON configuration, typically for routing users to different workflows or external resources.
+
+**Use Case**: Display categorized action cards (e.g., incident types, help categories) where each card routes to email, external URL, or internal route.
+
+**Architecture**:
+- **JSON Config**: All content in `client/public/static/[config-name].json`
+- **Single Route**: Direct page at `/[route-name]` (no modal)
+- **Card Layout**: Responsive grid of clickable cards with icons, titles, descriptions
+- **Help Section**: Optional "Unsure?" section with contact details and guidance
+
+**Implementation Steps**:
+
+1. **Create JSON Configuration File**
+   ```json
+   // client/public/static/incident-config.json
+   {
+     "incidents": [
+       {
+         "id": "data-breach",
+         "title": "Datenschutzpanne",
+         "icon": "🔒",
+         "description": "Unbefugte Verarbeitung, Verlust oder Offenlegung personenbezogener Daten",
+         "target": "https://intranet.example.com/form",
+         "targetType": "external",
+         "contact": "privacy@example.com (Data Protection Officer)"
+       },
+       {
+         "id": "security-incident",
+         "title": "Sicherheitsvorfall",
+         "icon": "🛡️",
+         "description": "Unbefugter Zugriff, Malware, DDoS, oder andere Angriffe",
+         "target": "security@example.com",
+         "targetType": "email",
+         "contact": "security@example.com (IT-Security)"
+       }
+     ],
+     "contacts": {
+       "emergency": {
+         "number": "+49 (0)XXX XXXXXX (nur kritische Vorfälle, 24/7)"
+       }
+     }
+   }
+   ```
+   **Note**: Include `targetType` field to distinguish between "external" (opens URL in new tab), "email" (mailto:), and "internal" (navigate within app).
+
+2. **Create Landing Page Component**
+   ```typescript
+   // client/src/components/IncidentReport/IncidentReportPage.tsx
+   import React, { useState, useEffect } from 'react';
+   import { Shield, Lock, Scale, Bug } from 'lucide-react';
+   import { useLocalize } from '~/hooks';
+
+   export default function IncidentReportPage() {
+     const localize = useLocalize();
+     const [incidentData, setIncidentData] = useState<IncidentConfig | null>(null);
+
+     useEffect(() => {
+       const loadIncidentConfig = async () => {
+         const response = await fetch('/static/incident-config.json');
+         const data = await response.json();
+         setIncidentData(data);
+       };
+       loadIncidentConfig();
+     }, []);
+
+     const handleIncidentClick = (incident: IncidentType) => {
+       if (incident.targetType === 'email') {
+         window.location.href = `mailto:${incident.target}`;
+       } else if (incident.targetType === 'external') {
+         window.open(incident.target, '_blank', 'noopener,noreferrer');
+       } else {
+         // Internal navigation
+         navigate(incident.target);
+       }
+     };
+
+     const iconMap = {
+       '🔒': Lock,
+       '🛡️': Shield,
+       '⚖️': Scale,
+       '🐛': Bug,
+     };
+
+     return (
+       <div className="flex h-screen flex-col items-center overflow-y-auto">
+         <div className="w-full max-w-4xl px-4 py-8">
+           <h1>{localize('com_ui_incident_report_title')}</h1>
+
+           {/* Action Cards Grid */}
+           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+             {incidentData.incidents.map((incident) => {
+               const IconComponent = iconMap[incident.icon] || Shield;
+               return (
+                 <button
+                   key={incident.id}
+                   onClick={() => handleIncidentClick(incident)}
+                   className="flex flex-col items-start gap-3 rounded-lg border p-6 hover:bg-surface-hover"
+                 >
+                   <IconComponent className="h-8 w-8" aria-hidden="true" />
+                   <h2 className="text-xl font-semibold">{incident.title}</h2>
+                   <p className="text-text-secondary">{incident.description}</p>
+                   <p className="text-sm text-text-secondary">{incident.contact}</p>
+                 </button>
+               );
+             })}
+           </div>
+
+           {/* Help Section */}
+           <div className="mt-8 rounded-lg bg-surface-secondary p-6">
+             <h2>{localize('com_ui_incident_report_unsure')}</h2>
+             <p>{localize('com_ui_incident_report_help_text')}</p>
+             <p className="text-sm">{incidentData.contacts.emergency.number}</p>
+           </div>
+         </div>
+       </div>
+     );
+   }
+   ```
+
+3. **Add Route**
+   ```typescript
+   // client/src/routes/index.tsx
+   import { IncidentReportPage } from '~/components/IncidentReport';
+
+   {
+     path: 'incident-report',
+     element: <IncidentReportPage />,
+   }
+   ```
+
+4. **Add Navigation Links in Multiple Locations**
+   ```typescript
+   // Profile Menu (client/src/components/Nav/AccountSettings.tsx)
+   import { AlertTriangle } from 'lucide-react';
+
+   <Select.SelectItem onClick={() => navigate('/incident-report')}>
+     <AlertTriangle className="icon-md" aria-hidden="true" />
+     {localize('com_nav_report_incident')}
+   </Select.SelectItem>
+
+   // Footer (via AILabelBadge or direct link)
+   <button onClick={() => navigate('/incident-report')}>
+     {localize('com_nav_report_incident')}
+   </button>
+   ```
+
+5. **Add Localization Keys**
+   ```json
+   // en/translation.json
+   {
+     "com_nav_report_incident": "Report Incident",
+     "com_ui_incident_report_title": "Report Incident",
+     "com_ui_incident_report_loading": "Loading incident types...",
+     "com_ui_incident_report_error": "Failed to load incident types",
+     "com_ui_incident_report_unsure": "Not sure which category?",
+     "com_ui_incident_report_help_text": "Contact support for guidance..."
+   }
+
+   // de/translation.json
+   {
+     "com_nav_report_incident": "Vorfall melden",
+     "com_ui_incident_report_title": "Vorfall melden",
+     "com_ui_incident_report_loading": "Vorfalltypen werden geladen...",
+     "com_ui_incident_report_error": "Vorfalltypen konnten nicht geladen werden",
+     "com_ui_incident_report_unsure": "Nicht sicher welche Kategorie?",
+     "com_ui_incident_report_help_text": "Kontaktiere Support für Hilfe..."
+   }
+   ```
+
+**Key Characteristics**:
+- JSON-driven card content for easy updates
+- Flexible routing: email (mailto:), external URLs (new tab), internal routes
+- Icon mapping system for consistent visual design
+- Responsive grid layout (1 column mobile, 2+ columns desktop)
+- Help/fallback section for users unsure of category
+- No accordion complexity - direct action buttons
+- Loading and error states with proper ARIA labels
+
+**Target Type Handling**:
+- `email`: Opens default email client with mailto: link
+- `external`: Opens URL in new tab with `noopener,noreferrer` for security
+- `internal`: Uses React Router navigate() for in-app routing
+
+**When to Use This Pattern**:
+- Incident/issue reporting with multiple categories
+- Help center with categorized support options
+- Resource directories with external/internal links
+- Action dashboards with workflow routing
+
+**When NOT to Use**:
+- For FAQ content with Q&A format (use FAQ Pattern instead)
+- For legal documents with extensive text (use Two-Tier Modal Pattern instead)
+- For complex forms requiring input fields (use form components instead)
+
+**Examples in Codebase**:
+- Incident Report Page (TURBO-42): `client/src/components/IncidentReport/IncidentReportPage.tsx`
+- JSON Config: `client/public/static/incident-config.json`
 
 ### Reusable Badge/Label Component Pattern
 
