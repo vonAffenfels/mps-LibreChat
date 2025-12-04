@@ -18,6 +18,7 @@ import SearchBar from './SearchBar';
 import NewChat from './NewChat';
 import { cn } from '~/utils';
 import store from '~/store';
+import AILabelBadge from '~/components/ui/AILabelBadge';
 
 const BookmarkNav = lazy(() => import('./Bookmarks/BookmarkNav'));
 const AccountSettings = lazy(() => import('./AccountSettings'));
@@ -228,6 +229,9 @@ const Nav = memo(
                         isLoading={isFetchingNextPage || showLoading || isLoading}
                         isSearchLoading={isSearchLoading}
                       />
+                    </div>
+                    <div className="mb-2 px-2">
+                      <AILabelBadge variant="compact" />
                     </div>
                     <Suspense fallback={null}>
                       <AccountSettings />

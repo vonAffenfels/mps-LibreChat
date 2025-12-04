@@ -12,6 +12,7 @@ import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
 import { useHasAccess } from '~/hooks';
 import { AnimatePresence, motion } from 'framer-motion';
+import AILabelBadge from '~/components/ui/AILabelBadge';
 
 const defaultInterface = getConfigDefaults().interface;
 
@@ -73,6 +74,7 @@ export default function Header() {
         </div>
         {!isSmallScreen && (
           <div className="flex items-center gap-2">
+            <AILabelBadge variant="header" />
             <ExportAndShareMenu
               isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
             />
