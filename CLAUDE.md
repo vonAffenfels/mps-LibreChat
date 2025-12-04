@@ -777,6 +777,206 @@ This pattern is used for FAQ pages where content needs to be easily maintainable
 - FAQ Page (TURBO-38): `client/src/components/FAQ/FAQPage.tsx`
 - JSON Config: `client/public/static/faq-config.json`
 
+### Reusable Badge/Label Component Pattern
+
+This pattern is used for creating reusable UI badges or labels that need to appear consistently across multiple locations in the interface.
+
+**Use Case**: Display consistent badges (e.g., AI identification, status indicators, feature flags) across different UI contexts with variant support.
+
+**Architecture**:
+- **Single Component**: One reusable component with multiple variants
+- **Variant System**: Different styling/behavior for different contexts
+- **Integration Points**: Header, sidebar, footer, landing page, etc.
+- **Localization**: Full i18n support with useLocalize() hook
+- **Accessibility**: ARIA labels, tooltips, keyboard navigation
+
+**Implementation Steps**:
+
+1. **Create Reusable Component with Variants**
+   ```typescript
+   // client/src/components/ui/ComponentName.tsx
+   import React from 'react';
+   import { IconName } from 'lucide-react';
+   import { useNavigate } from 'react-router-dom';
+   import { useLocalize } from '~/hooks';
+   import { TooltipAnchor } from '@librechat/client';
+
+   interface ComponentProps {
+     variant?: 'default' | 'compact' | 'header' | 'footer';
+     showLinks?: boolean;
+     className?: string;
+   }
+
+   export default function ComponentName({
+     variant = 'default',
+     showLinks = false,
+     className = ''
+   }: ComponentProps) {
+     const localize = useLocalize();
+     const navigate = useNavigate();
+
+     // Variant-specific styling
+     const variantClasses = {
+       default: 'flex items-center gap-2 rounded-lg border border-border-light bg-surface-primary px-3 py-2 text-sm',
+       compact: 'flex items-center gap-1.5 rounded-md border border-border-light bg-surface-primary px-2 py-1 text-xs',
+       header: 'flex items-center gap-1.5 rounded-md border border-border-light bg-surface-primary-alt px-2 py-1 text-xs',
+       footer: 'inline-flex items-center gap-2 rounded-lg border border-border-light bg-surface-primary px-3 py-1.5 text-sm'
+     };
+
+     return (
+       <TooltipAnchor
+         description={localize('tooltip_key')}
+         render={
+           <div
+             className={`${variantClasses[variant]} ${className}`}
+             role="status"
+             aria-label={localize('aria_label_key')}
+           >
+             <IconName size={16} className="text-text-secondary" aria-hidden="true" />
+             <span className="font-medium text-text-primary">
+               {localize('label_key')}
+             </span>
+           </div>
+         }
+       />
+     );
+   }
+   ```
+
+2. **Add Localization Keys**
+   ```json
+   // client/src/locales/en/translation.json
+   {
+     "label_key": "Label Text",
+     "tooltip_key": "Tooltip description text",
+     "aria_label_key": "Accessible label for screen readers"
+   }
+
+   // client/src/locales/de/translation.json
+   {
+     "label_key": "Label Text (German)",
+     "tooltip_key": "Tooltip-Beschreibung",
+     "aria_label_key": "Zugängliches Label für Screenreader"
+   }
+   ```
+
+3. **Integrate into Multiple Locations**
+
+   **Header Integration:**
+   ```typescript
+   // client/src/components/Chat/Header.tsx
+   import ComponentName from '~/components/ui/ComponentName';
+
+   // In render, add to right section for desktop
+   {!isSmallScreen && (
+     <div className="flex items-center gap-2">
+       <ComponentName variant="header" />
+       {/* Other header components */}
+     </div>
+   )}
+   ```
+
+   **Sidebar Integration:**
+   ```typescript
+   // client/src/components/Nav/Nav.tsx
+   import ComponentName from '~/components/ui/ComponentName';
+
+   // Add above AccountSettings at bottom of sidebar
+   <div className="mb-2 px-2">
+     <ComponentName variant="compact" />
+   </div>
+   <Suspense fallback={null}>
+     <AccountSettings />
+   </Suspense>
+   ```
+
+   **Landing Page Integration:**
+   ```typescript
+   // client/src/components/Chat/Landing.tsx
+   import ComponentName from '~/components/ui/ComponentName';
+
+   // Add after description
+   {description && (
+     <div className="animate-fadeIn mt-4 max-w-md text-center text-sm">
+       {description}
+     </div>
+   )}
+   <div className="animate-fadeIn mt-6">
+     <ComponentName variant="default" />
+   </div>
+   ```
+
+   **Footer Integration:**
+   ```typescript
+   // client/src/components/Chat/Footer.tsx
+   import ComponentName from '~/components/ui/ComponentName';
+
+   // Restructure footer to include badge
+   <div className="flex flex-col items-center gap-3">
+     <div className="w-full">
+       <ComponentName variant="footer" showLinks={true} />
+     </div>
+     <div className="flex items-center gap-2">
+       {/* Existing footer elements */}
+     </div>
+   </div>
+   ```
+
+**Key Characteristics**:
+- Single source of truth for component logic and styling
+- Variant system for context-specific rendering
+- Consistent behavior across all integration points
+- Full localization support (EN/DE minimum)
+- Accessibility-first design (ARIA, keyboard, screen readers)
+- Optional features controlled via props (showLinks, etc.)
+- Integration with existing Radix UI patterns (TooltipAnchor)
+- Responsive design considerations for each variant
+
+**Variant Design Guidelines**:
+- **default**: Standard badge for general use (landing page, content areas)
+- **compact**: Smaller version for space-constrained areas (sidebar, inline)
+- **header**: Optimized for header bar with alternative background
+- **footer**: Footer-specific styling with optional additional elements
+
+**Best Practices**:
+1. Use TooltipAnchor from @librechat/client for consistent tooltip behavior
+2. Always include aria-label for accessibility
+3. Use aria-hidden="true" on decorative icons
+4. Keep variant classes focused on visual differences only
+5. Use role="status" for non-interactive informational badges
+6. Include keyboard navigation for interactive elements
+7. Test on mobile, tablet, and desktop viewports
+8. Verify contrast ratios meet WCAG AA standards
+
+**When to Use This Pattern**:
+- Need consistent UI element across multiple locations
+- Element requires different styling per context
+- Full localization support needed
+- Accessibility is a priority
+- Component may have optional features (links, actions)
+
+**When NOT to Use**:
+- One-off UI elements with no reuse
+- Context-specific logic that doesn't generalize
+- Highly dynamic content that changes per location
+- Elements that don't need variant support
+
+**Examples in Codebase**:
+- AI Label Badge (TURBO-36): `client/src/components/ui/AILabelBadge.tsx`
+  - Header: `client/src/components/Chat/Header.tsx:77`
+  - Sidebar: `client/src/components/Nav/Nav.tsx:234`
+  - Landing: `client/src/components/Chat/Landing.tsx:214`
+  - Footer: `client/src/components/Chat/Footer.tsx:96`
+
+**Integration Best Practices from TURBO-36**:
+- Header placement: Right section, before ExportAndShareMenu (desktop only)
+- Sidebar placement: Above AccountSettings, with margin spacing
+- Landing placement: After description, with fade-in animation
+- Footer placement: Restructure to flex-col, badge at top with links
+- All placements maintain existing component hierarchy
+- Minimal changes to existing layout structure
+- Responsive behavior: Hide in mobile header, show in other contexts
+
 ## Critical Files
 
 - `api/server/index.js` - Backend entry point
