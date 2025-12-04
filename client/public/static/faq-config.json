@@ -5,20 +5,20 @@
       "title": "Allgemeine Fragen",
       "questions": [
         {
-          "question": "Was ist der Unterschied zwischen TurBo und LibreChat?",
-          "answer": "TurBo basiert auf LibreChat, verfügt jedoch über umfangreiche Anpassungen und Funktionen, die speziell für unsere Verwendung entwickelt wurden."
+          "question": "Was ist der Unterschied zwischen Turbo und LibreChat?",
+          "answer": "Turbo basiert auf LibreChat, verfügt jedoch über umfangreiche Anpassungen und Funktionen, die speziell für unsere Verwendung entwickelt wurden."
         },
         {
-          "question": "Ist TurBo Open Source?",
-          "answer": "Basierend auf dem Open Source LibreChat, ist TurBo selbst nicht Open Source sondern Closed Source. Wir möchten zu einem späteren Zeitpunkt unsere Anpassungen jedoch zur Verfügung stellen."
+          "question": "Ist Turbo Open Source?",
+          "answer": "Basierend auf dem Open Source LibreChat, ist Turbo selbst nicht Open Source sondern Closed Source. Wir möchten zu einem späteren Zeitpunkt unsere Anpassungen jedoch zur Verfügung stellen."
         },
         {
           "question": "Ist der Code auf Github?",
           "answer": "Der LibreChat Code ist öffentlich auf Github. Unsere Anpassungen sind jedoch auf unserem internen Gitlab Server zu finden."
         },
         {
-          "question": "Ist TurBo auf meinem Rechner gespeichert?",
-          "answer": "TurBo ist eine webbasierte Anwendung und nicht direkt auf deinem Rechner installiert. Allerdings werden Teile der Website auf deinem Rechner gespeichert um Ladezeiten zu verringern. Es werden keine sensiblen Informationen dabei auf dem Rechner gespeichert."
+          "question": "Ist Turbo auf meinem Rechner gespeichert?",
+          "answer": "Turbo ist eine webbasierte Anwendung und nicht direkt auf deinem Rechner installiert. Allerdings werden Teile der Website auf deinem Rechner gespeichert um Ladezeiten zu verringern. Es werden keine sensiblen Informationen dabei auf dem Rechner gespeichert."
         }
       ]
     },
@@ -57,7 +57,7 @@
           "answer": "In der linken Leiste können vergangene Unterhaltungen angezeigt werden. Nach einem Klick auf eine solche Unterhaltung werden diese wieder angezeigt. Es kann nur mit dem zuletzt verwendeten Agenten weiter gearbeitet werden."
         },
         {
-          "question": "Ist es möglich in TurBo Code zu schreiben?",
+          "question": "Ist es möglich in Turbo Code zu schreiben?",
           "answer": "Ja, über verschiedene Agenten kann unter anderem Typescript Code programmiert werden."
         },
         {
@@ -73,7 +73,7 @@
           "answer": "Der turbo_admins Chat kann für technische Probleme und Fragen genutzt werden."
         },
         {
-          "question": "Wo kann ich nach Hilfe bei TurBo fragen?",
+          "question": "Wo kann ich nach Hilfe bei Turbo fragen?",
           "answer": "Kontaktiere turbo_admins über Teams mit deinem Problem."
         }
       ]
@@ -83,12 +83,12 @@
       "title": "Datenzugriff & Sicherheit",
       "questions": [
         {
-          "question": "Kann ich mit TurBo auf interne Daten zugreifen?",
+          "question": "Kann ich mit Turbo auf interne Daten zugreifen?",
           "answer": "Ja, über verschiedene Tools können interne Daten geladen und verarbeitet werden. Sei dir dabei immer über die Sensibilität deiner Daten bewusst und nutze am besten die entsprechenden Datensicherheitsagenten."
         },
         {
-          "question": "Wer ist für TurBo verantwortlich?",
-          "answer": "TurBo wird von der KI Abteilung im IT-Team gepflegt und gehört zum Projekt TURBO, Kontakt: turbo_admins"
+          "question": "Wer ist für Turbo verantwortlich?",
+          "answer": "Turbo wird von der KI Abteilung im IT-Team gepflegt und gehört zum Projekt TURBO, Kontakt: turbo_admins"
         }
       ]
     },
@@ -98,19 +98,19 @@
       "questions": [
         {
           "question": "Wie melde ich einen Sicherheitsvorfall oder eine Datenschutzpanne?",
-          "answer": "TurBo bietet mehrere Meldekanäle: 1) Datenschutzpanne - Nutze das Intranet-Formular unter intranet.motorpresse.de/datenschutz/panne-melden oder kontaktiere fschleid@motorpresse.de (Datenschutzkoordinatorin). 2) Sicherheitsvorfall - Kontaktiere security@motorpresse.de (IT-Security). 3) Compliance-Verstoß - Kontaktiere compliance@motorpresse.de (Legal). 4) Technisches Problem - Kontaktiere support@motorpresse.de oder christian.kuttler@motorpresse.de (Application Owner). Für anonyme Meldungen steht das Trusty Whistleblower-System unter motorpresse.trusty.report zur Verfügung."
+          "answer": "Turbo bietet mehrere Meldekanäle:\n\n1) Datenschutzpanne - Nutze das Intranet-Formular unter intranet.motorpresse.de/datenschutz/panne-melden oder kontaktiere fschleid@motorpresse.de (Datenschutzkoordinatorin).\n\n2) Sicherheitsvorfall - Kontaktiere security@motorpresse.de (IT-Security).\n\n3) Compliance-Verstoß - Kontaktiere compliance@motorpresse.de (Legal).\n\n4) Technisches Problem - Kontaktiere support@motorpresse.de oder christian.kuttler@motorpresse.de (Application Owner).\n\nFür anonyme Meldungen steht das Trusty Whistleblower-System unter motorpresse.trusty.report zur Verfügung."
         },
         {
           "question": "Was ist der Incident-Response-Prozess?",
-          "answer": "Der Incident-Response-Prozess folgt diesen Schritten: 1) Detection - Vorfall wird erkannt und gemeldet. 2) Triage - Einstufung der Schwere und Priorisierung. 3) Containment - Eindämmung des Vorfalls zur Schadensbegrenzung. 4) Recovery - Wiederherstellung des Normalbetriebs. 5) Post-Incident-Review (PIR) - Analyse und Lessons Learned. Bei kritischen Vorfällen erfolgt eine sofortige Eskalation an den Notfallkontakt: +49 (0)711 182-0 (24/7). Alle Prozesse entsprechen den Anforderungen der DSGVO Art. 33/34 (Meldepflicht bei Datenschutzverletzungen)."
+          "answer": "Der Incident-Response-Prozess folgt diesen Schritten:\n\n1) Detection - Vorfall wird erkannt und gemeldet.\n\n2) Triage - Einstufung der Schwere und Priorisierung.\n\n3) Containment - Eindämmung des Vorfalls zur Schadensbegrenzung.\n\n4) Recovery - Wiederherstellung des Normalbetriebs.\n\n5) Post-Incident-Review (PIR) - Analyse und Lessons Learned.\n\nBei kritischen Vorfällen erfolgt eine sofortige Eskalation an den Notfallkontakt: +49 (0)711 182-0 (24/7). Alle Prozesse entsprechen den Anforderungen der DSGVO Art. 33/34 (Meldepflicht bei Datenschutzverletzungen)."
         },
         {
           "question": "Was sind die Reaktionszeiten (SLAs) für Vorfallsmeldungen?",
-          "answer": "Die Reaktionszeiten (SLAs) variieren je nach Schweregrad: Kritische Vorfälle (z.B. aktiver Datenverlust, Systemausfall) - Sofortige Reaktion innerhalb von 15 Minuten, 24/7 Verfügbarkeit. Hohe Priorität (z.B. potenzielle Datenschutzpanne) - Reaktion innerhalb von 2 Stunden während Geschäftszeiten. Mittlere Priorität (z.B. Compliance-Verstoß) - Reaktion innerhalb von 1 Werktag. Niedrige Priorität (z.B. technische Probleme) - Reaktion innerhalb von 3 Werktagen. Bei Unsicherheit über die Priorität kontaktiere bitte direkt einen der oben genannten Ansprechpartner."
+          "answer": "Die Reaktionszeiten (SLAs) variieren je nach Schweregrad:\n\nKritische Vorfälle (z.B. aktiver Datenverlust, Systemausfall) - Sofortige Reaktion innerhalb von 15 Minuten, 24/7 Verfügbarkeit.\n\nHohe Priorität (z.B. potenzielle Datenschutzpanne) - Reaktion innerhalb von 2 Stunden während Geschäftszeiten.\n\nMittlere Priorität (z.B. Compliance-Verstoß) - Reaktion innerhalb von 1 Werktag.\n\nNiedrige Priorität (z.B. technische Probleme) - Reaktion innerhalb von 3 Werktagen.\n\nBei Unsicherheit über die Priorität kontaktiere bitte direkt einen der oben genannten Ansprechpartner."
         },
         {
           "question": "Wie funktioniert die RACI-Matrix für Incident Response?",
-          "answer": "Die RACI-Matrix definiert Verantwortlichkeiten: Datenschutzpanne - Responsible: Datenschutzkoordinatorin (fschleid@motorpresse.de), Accountable: DSB (Dr. Arndt Glienke), Consulted: IT-Security, Legal, Informed: Betroffene Mitarbeiter. Sicherheitsvorfall - Responsible: IT-Security (security@motorpresse.de), Accountable: IT-Leitung, Consulted: Datenschutz, Legal, Informed: Application Owner, Betroffene Teams. Compliance-Verstoß - Responsible: Legal (compliance@motorpresse.de), Accountable: Rechtsabteilung, Consulted: Datenschutz, IT-Security, Informed: Management. Technisches Problem - Responsible: Application Owner (christian.kuttler@motorpresse.de), Accountable: IT-Leitung, Consulted: Entwicklerteam, Informed: Nutzer. RACI bedeutet: R=Responsible (durchführend), A=Accountable (verantwortlich), C=Consulted (konsultiert), I=Informed (informiert)."
+          "answer": "Die RACI-Matrix definiert Verantwortlichkeiten:\n\nDatenschutzpanne - Responsible: Datenschutzkoordinatorin (fschleid@motorpresse.de), Accountable: DSB (Dr. Arndt Glienke), Consulted: IT-Security, Legal, Informed: Betroffene Mitarbeiter.\n\nSicherheitsvorfall - Responsible: IT-Security (security@motorpresse.de), Accountable: IT-Leitung, Consulted: Datenschutz, Legal, Informed: Application Owner, Betroffene Teams.\n\nCompliance-Verstoß - Responsible: Legal (compliance@motorpresse.de), Accountable: Rechtsabteilung, Consulted: Datenschutz, IT-Security, Informed: Management.\n\nTechnisches Problem - Responsible: Application Owner (christian.kuttler@motorpresse.de), Accountable: IT-Leitung, Consulted: Entwicklerteam, Informed: Nutzer.\n\nRACI bedeutet: R=Responsible (durchführend), A=Accountable (verantwortlich), C=Consulted (konsultiert), I=Informed (informiert)."
         }
       ]
     }

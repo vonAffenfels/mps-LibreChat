@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import * as Accordion from '@radix-ui/react-accordion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useLocalize } from '~/hooks';
@@ -149,7 +150,24 @@ export default function FAQPage() {
                       </Accordion.Trigger>
                     </Accordion.Header>
                     <Accordion.Content className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden">
-                      <div className="px-4 pb-4 pt-2 text-text-secondary">{item.answer}</div>
+                      <div className="px-4 pb-4 pt-2 text-text-secondary">
+                        <ReactMarkdown
+                          components={{
+                            p: ({ node: _n, ...props }) => (
+                              <p className="mb-4 last:mb-0" {...props} />
+                            ),
+                            ul: ({ node: _n, ...props }) => (
+                              <ul className="mb-4 ml-4 list-disc space-y-2 last:mb-0" {...props} />
+                            ),
+                            ol: ({ node: _n, ...props }) => (
+                              <ol className="mb-4 ml-4 list-decimal space-y-2 last:mb-0" {...props} />
+                            ),
+                            li: ({ node: _n, ...props }) => <li className="ml-2" {...props} />,
+                          }}
+                        >
+                          {item.answer}
+                        </ReactMarkdown>
+                      </div>
                     </Accordion.Content>
                   </Accordion.Item>
                 ))}
