@@ -135,6 +135,10 @@ export const router = createBrowserRouter(
               path: 'legal/usage-policy',
               element: <ChatRoute />,
             },
+            {
+              path: 'legal/privacy-policy',
+              element: <ChatRoute />,
+            },
           ],
         },
       ],

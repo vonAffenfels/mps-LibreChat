@@ -7,6 +7,11 @@ export default function Legal() {
   const localize = useLocalize();
   const navigate = useNavigate();
 
+  const handlePrivacyPolicyClick = () => {
+    // Dispatch custom event to open teaser modal
+    window.dispatchEvent(new CustomEvent('openPrivacyPolicyTeaser'));
+  };
+
   return (
     <div className="flex flex-col gap-3 p-1 text-sm text-text-primary">
       <div className="pb-3">
@@ -25,6 +30,15 @@ export default function Legal() {
         >
           <LinkIcon aria-hidden="true" />
           <span className="font-light">{localize('com_nav_usage_policy')}</span>
+        </button>
+      </div>
+      <div className="pb-3">
+        <button
+          onClick={handlePrivacyPolicyClick}
+          className="flex items-center space-x-2 text-text-primary transition-colors hover:text-text-secondary"
+        >
+          <LinkIcon aria-hidden="true" />
+          <span className="font-light">{localize('com_nav_privacy_policy')}</span>
         </button>
       </div>
     </div>

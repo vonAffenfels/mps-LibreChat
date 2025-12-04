@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import type { ContextType } from '~/common';
 import {
   useSearchEnabled,
@@ -29,6 +29,8 @@ export default function Root() {
   const [showTerms, setShowTerms] = useState(false);
   const [showImpressum, setShowImpressum] = useState(false);
   const [showUsagePolicy, setShowUsagePolicy] = useState(false);
+  const [showPrivacyPolicyFull, setShowPrivacyPolicyFull] = useState(false);
+  const [showPrivacyPolicyTeaser, setShowPrivacyPolicyTeaser] = useState(false);
   const [bannerHeight, setBannerHeight] = useState(0);
   const [navVisible, setNavVisible] = useState(() => {
     const savedNavVisible = localStorage.getItem('navVisible');
@@ -36,16 +38,22 @@ export default function Root() {
   });
 
   const location = useLocation();
+  const navigate = useNavigate();
   const localize = useLocalize();
   const { isAuthenticated, logout } = useAuthContext();
   const handleImpressumClose = useModalNavigation('/legal/imprint');
   const handleUsagePolicyClose = useModalNavigation('/legal/usage-policy');
+  const handlePrivacyPolicyFullClose = useModalNavigation('/legal/privacy-policy');
   const { content: impressumContent, loadContent: loadImpressum } = useStaticContent(
     '/static/imprint.md',
   );
   const { content: usagePolicyContent, loadContent: loadUsagePolicy } = useStaticContent(
     '/static/usage-policy.md',
   );
+  const { content: privacyPolicyFullContent, loadContent: loadPrivacyPolicyFull } =
+    useStaticContent('/static/privacy-policy-full.md');
+  const { content: privacyPolicyTeaserContent, loadContent: loadPrivacyPolicyTeaser } =
+    useStaticContent('/static/privacy-policy-teaser.md');
 
   // Global health check - runs once per authenticated session
   useHealthCheck(isAuthenticated);
@@ -83,6 +91,25 @@ export default function Root() {
     }
   }, [location.pathname, loadUsagePolicy]);
 
+  // Check if URL is /legal/privacy-policy and open full modal
+  useEffect(() => {
+    if (location.pathname === '/legal/privacy-policy') {
+      setShowPrivacyPolicyFull(true);
+      loadPrivacyPolicyFull();
+    }
+  }, [location.pathname, loadPrivacyPolicyFull]);
+
+  // Listen for custom event to open teaser modal
+  useEffect(() => {
+    const handleOpenTeaserEvent = () => {
+      openTeaserModal();
+    };
+    window.addEventListener('openPrivacyPolicyTeaser', handleOpenTeaserEvent);
+    return () => {
+      window.removeEventListener('openPrivacyPolicyTeaser', handleOpenTeaserEvent);
+    };
+  }, []);
+
   const handleAcceptTerms = () => {
     setShowTerms(false);
   };
@@ -90,6 +117,21 @@ export default function Root() {
   const handleDeclineTerms = () => {
     setShowTerms(false);
     logout('/login?redirect=false');
+  };
+
+  const openTeaserModal = () => {
+    setShowPrivacyPolicyTeaser(true);
+    loadPrivacyPolicyTeaser();
+  };
+
+  const closeTeaserModal = () => {
+    setShowPrivacyPolicyTeaser(false);
+  };
+
+  const handleReadFullVersion = () => {
+    // Close teaser modal and navigate to full version
+    closeTeaserModal();
+    navigate('/legal/privacy-policy');
   };
 
   if (!isAuthenticated) {
@@ -135,6 +177,29 @@ export default function Root() {
             onOpenChange={(isOpen) => handleUsagePolicyClose(isOpen, setShowUsagePolicy)}
             title={localize('com_nav_usage_policy')}
             modalContent={usagePolicyContent}
+          />
+          <StaticContentModal
+            open={showPrivacyPolicyFull}
+            onOpenChange={(isOpen) =>
+              handlePrivacyPolicyFullClose(isOpen, setShowPrivacyPolicyFull)
+            }
+            title={localize('com_nav_privacy_policy')}
+            modalContent={privacyPolicyFullContent}
+          />
+          <StaticContentModal
+            open={showPrivacyPolicyTeaser}
+            onOpenChange={closeTeaserModal}
+            title={localize('com_nav_privacy_policy')}
+            modalContent={privacyPolicyTeaserContent}
+            customButtons={
+              <button
+                onClick={handleReadFullVersion}
+                className="btn btn-primary"
+                type="button"
+              >
+                {localize('com_nav_read_full_version')}
+              </button>
+            }
           />
         </AssistantsMapContext.Provider>
       </FileMapContext.Provider>

@@ -9,12 +9,14 @@ const StaticContentModal = ({
   title,
   modalContent,
   ariaLabel,
+  customButtons,
 }: {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
   title: string;
   modalContent?: string | string[];
   ariaLabel?: string;
+  customButtons?: React.ReactNode;
 }) => {
   const localize = useLocalize();
 
@@ -52,7 +54,7 @@ const StaticContentModal = ({
             </div>
           </section>
         }
-        buttons={<></>}
+        buttons={customButtons || <></>}
       />
     </OGDialog>
   );

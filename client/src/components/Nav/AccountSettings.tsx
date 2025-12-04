@@ -22,6 +22,11 @@ function AccountSettings() {
   const [showSettings, setShowSettings] = useState(false);
   const [showFiles, setShowFiles] = useRecoilState(store.showFiles);
 
+  const handlePrivacyPolicyClick = () => {
+    // Dispatch custom event to open teaser modal
+    window.dispatchEvent(new CustomEvent('openPrivacyPolicyTeaser'));
+  };
+
   return (
     <Select.SelectProvider>
       <Select.Select
@@ -95,6 +100,14 @@ function AccountSettings() {
         >
           <LinkIcon aria-hidden="true" />
           {localize('com_nav_usage_policy')}
+        </Select.SelectItem>
+        <Select.SelectItem
+          value=""
+          onClick={handlePrivacyPolicyClick}
+          className="select-item text-sm"
+        >
+          <LinkIcon aria-hidden="true" />
+          {localize('com_nav_privacy_policy')}
         </Select.SelectItem>
         <Select.SelectItem
           value=""
