@@ -259,7 +259,7 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                       <Account />
                     </Tabs.Content>
                     <Tabs.Content value={SettingsTabValues.LEGAL} tabIndex={-1}>
-                      <Legal />
+                      <Legal onOpenChange={onOpenChange} />
                     </Tabs.Content>
                   </div>
                 </Tabs.Root>
