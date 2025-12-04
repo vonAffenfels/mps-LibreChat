@@ -398,6 +398,160 @@ Located in `api/strategies/`:
 4. Reference files by ID in messages/conversations
 5. Access via `/api/files/` endpoints
 
+### Two-Tier Modal Pattern (State-Based + Route-Based)
+
+This pattern is used for legal documents (Privacy Policy, Usage Policy) where you need both a summary view and a full detailed view with different invocation mechanisms.
+
+**Use Case**: Display a teaser/summary modal via onClick handlers (no URL change), then allow navigation to a full version via a permanent URL.
+
+**Architecture**:
+- **Teaser Modal**: State-based, opened via custom events, NO route, URL unchanged
+- **Full Modal**: Route-based, opened via URL navigation, permanent link
+- **Transition**: Button in teaser closes it and navigates to full version
+
+**Implementation Steps**:
+
+1. **Create Two Static Markdown Files**
+   ```
+   client/public/static/document-teaser.md    # Summary version
+   client/public/static/document-full.md      # Complete version
+   ```
+
+2. **Add Route for Full Version Only**
+   ```typescript
+   // client/src/routes/index.tsx
+   {
+     path: 'legal/document-name',
+     element: <ChatRoute />,
+   }
+   ```
+
+3. **Implement Modal States in Root.tsx**
+   ```typescript
+   // State for both modals
+   const [showDocumentFull, setShowDocumentFull] = useState(false);
+   const [showDocumentTeaser, setShowDocumentTeaser] = useState(false);
+
+   // Content hooks
+   const { content: fullContent, loadContent: loadFull } =
+     useStaticContent('/static/document-full.md');
+   const { content: teaserContent, loadContent: loadTeaser } =
+     useStaticContent('/static/document-teaser.md');
+
+   // Route-based full modal
+   useEffect(() => {
+     if (location.pathname === '/legal/document-name') {
+       setShowDocumentFull(true);
+       loadFull();
+     }
+   }, [location.pathname, loadFull]);
+
+   // Custom event listener for teaser
+   useEffect(() => {
+     const handleOpenTeaserEvent = () => {
+       setShowDocumentTeaser(true);
+       loadTeaser();
+     };
+     window.addEventListener('openDocumentTeaser', handleOpenTeaserEvent);
+     return () => {
+       window.removeEventListener('openDocumentTeaser', handleOpenTeaserEvent);
+     };
+   }, []);
+
+   // Navigation from teaser to full
+   const handleReadFullVersion = () => {
+     setShowDocumentTeaser(false);  // Close teaser
+     navigate('/legal/document-name');  // Navigate to full
+   };
+   ```
+
+4. **Render Both Modals**
+   ```typescript
+   {/* Full modal - route-based */}
+   <StaticContentModal
+     open={showDocumentFull}
+     onOpenChange={(isOpen) => handleModalClose(isOpen, setShowDocumentFull)}
+     title={localize('com_nav_document_name')}
+     modalContent={fullContent}
+   />
+
+   {/* Teaser modal - state-based with custom button */}
+   <StaticContentModal
+     open={showDocumentTeaser}
+     onOpenChange={setShowDocumentTeaser}
+     title={localize('com_nav_document_name')}
+     modalContent={teaserContent}
+     customButtons={
+       <button
+         onClick={handleReadFullVersion}
+         className="btn btn-primary"
+         type="button"
+       >
+         {localize('com_nav_read_full_version')}
+       </button>
+     }
+   />
+   ```
+
+5. **Add Links in Components Using Custom Events**
+   ```typescript
+   // Profile menu or settings component
+   const handleDocumentClick = () => {
+     window.dispatchEvent(new CustomEvent('openDocumentTeaser'));
+   };
+
+   <button onClick={handleDocumentClick}>
+     {localize('com_nav_document_name')}
+   </button>
+   ```
+
+6. **Extend StaticContentModal for Custom Buttons** (if not already done)
+   ```typescript
+   // client/src/components/ui/StaticContentModal.tsx
+   const StaticContentModal = ({
+     open,
+     onOpenChange,
+     title,
+     modalContent,
+     ariaLabel,
+     customButtons,  // Add this prop
+   }: {
+     open: boolean;
+     onOpenChange: (isOpen: boolean) => void;
+     title: string;
+     modalContent?: string | string[];
+     ariaLabel?: string;
+     customButtons?: React.ReactNode;  // Add this type
+   }) => {
+     // ...
+     return (
+       <DialogTemplate
+         // ...
+         buttons={customButtons || <></>}  // Render custom buttons
+       />
+     );
+   };
+   ```
+
+**Key Characteristics**:
+- Teaser modal: Pure state, no URL involvement, custom event system
+- Full modal: Route-based, permanent URL, follows standard route pattern
+- Navigation flow: onClick → custom event → teaser state → button click → close teaser + navigate → route change → full modal
+- URL behavior: Teaser keeps URL unchanged, full uses specific route
+- Direct URL access (`/legal/document-name`) opens ONLY full modal (no teaser)
+- Cross-component communication via `window.dispatchEvent()` without prop drilling
+
+**Benefits**:
+- Permanent linkable URL for full version (SEO, bookmarks, direct access)
+- Lightweight teaser for quick overview without URL pollution
+- Clean separation of concerns (state vs route)
+- No prop drilling for cross-component modal invocation
+- Reusable pattern for other two-tier content (Terms, Impressum, etc.)
+
+**Examples in Codebase**:
+- Privacy Policy (TURBO-29): `client/src/routes/Root.tsx:32-135`
+- Usage Policy (TURBO-32): Similar pattern implementation
+
 ## Critical Files
 
 - `api/server/index.js` - Backend entry point
