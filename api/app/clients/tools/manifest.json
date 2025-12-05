@@ -59,6 +59,20 @@
     ]
   },
   {
+    "name": "Gemini Image Generation",
+    "pluginKey": "gemini_image_gen",
+    "toolkit": true,
+    "description": "Generate high-quality images using Google Gemini 2.5 Flash Image model (nano-banana)",
+    "icon": "https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06b.png",
+    "authConfig": [
+      {
+        "authField": "IMAGE_GEN_GEMINI_API_KEY",
+        "label": "Gemini API Key",
+        "description": "Your Google Gemini API Key for Image Generation. Get your key at <a href='https://aistudio.google.com/app/apikey' target='_blank'>Google AI Studio</a>."
+      }
+    ]
+  },
+  {
     "name": "Wolfram",
     "pluginKey": "wolfram",
     "description": "Access computation, math, curated knowledge & real-time data through Wolfram|Alpha and Wolfram Language.",

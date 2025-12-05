@@ -35,6 +35,7 @@ const {
   createYouTubeTools,
   TavilySearchResults,
   createOpenAIImageTools,
+  createGeminiImageTools,
 } = require('../');
 const { primeFiles: primeCodeFiles } = require('~/server/services/Files/Code/process');
 const { createFileSearchTool, primeFiles: primeSearchFiles } = require('./fileSearch');
@@ -230,6 +231,20 @@ const loadTools = async ({
         fileStrategy,
         imageFiles,
         defaultModel,
+      });
+    },
+    gemini_image_gen: async (_toolContextMap) => {
+      const authFields = getAuthFields('gemini_image_gen');
+      const authValues = await loadAuthValues({ userId: user, authFields });
+
+      logger.info(
+        `[handleTools] gemini_image_gen - hasAgent: ${!!agent}, isAgent: ${!!agent}`
+      );
+
+      return createGeminiImageTools({
+        ...authValues,
+        isAgent: !!agent,
+        req: options.req,
       });
     },
   };
