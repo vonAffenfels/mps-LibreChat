@@ -55,6 +55,7 @@ function createAbortHandler() {
  * @param {MongoFile[]} [fields.imageFiles] - The images to be used for editing
  * @param {string} [fields.imageOutputType] - The image output type configuration
  * @param {string} [fields.fileStrategy] - The file storage strategy
+ * @param {string} [fields.defaultModel='gpt-image-1'] - Default model to use (gpt-image-1 or gpt-image-1-mini)
  * @returns {Array<ReturnType<tool>>} - Array of image tools
  */
 function createOpenAIImageTools(fields = {}) {
@@ -67,6 +68,9 @@ function createOpenAIImageTools(fields = {}) {
   const { req } = fields;
   const imageOutputType = fields.imageOutputType || EImageOutputType.PNG;
   const appFileStrategy = fields.fileStrategy;
+  const defaultModel = fields.defaultModel || 'gpt-image-1';
+
+  logger.info('[OpenAIImageTools] Initializing image tools', { defaultModel });
 
   const getApiKey = () => {
     const apiKey = process.env.IMAGE_GEN_OAI_API_KEY ?? '';
@@ -110,6 +114,7 @@ function createOpenAIImageTools(fields = {}) {
     async (
       {
         prompt,
+        model,
         background = 'auto',
         n = 1,
         output_compression = 100,
@@ -118,6 +123,11 @@ function createOpenAIImageTools(fields = {}) {
       },
       runnableConfig,
     ) => {
+      // Use provided model or fall back to defaultModel
+      const selectedModel = model || defaultModel;
+      logger.info('[ImageGenOAI] Generating image');
+      logger.info('[ImageGenOAI] Selected model: ' + selectedModel);
+      logger.info('[ImageGenOAI] Prompt: ' + prompt);
       if (!prompt) {
         throw new Error('Missing required field: prompt');
       }
@@ -158,7 +168,7 @@ function createOpenAIImageTools(fields = {}) {
 
         resp = await openai.images.generate(
           {
-            model: 'gpt-image-1',
+            model: selectedModel,
             prompt: replaceUnwantedChars(prompt),
             n: Math.min(Math.max(1, n), 10),
             background,
@@ -175,7 +185,7 @@ function createOpenAIImageTools(fields = {}) {
           },
         );
       } catch (error) {
-        const message = '[image_gen_oai] Problem generating the image:';
+        const message = '[ImageGenOAI] Problem generating the image:';
         logAxiosError({ error, message });
         return returnValue(`Something went wrong when trying to generate the image. The OpenAI API may be unavailable:
 Error Message: ${error.message}`);
@@ -226,7 +236,13 @@ Error Message: ${error.message}`);
    * Image Editing Tool
    */
   const imageEditTool = tool(
-    async ({ prompt, image_ids, quality = 'auto', size = 'auto' }, runnableConfig) => {
+    async ({ prompt, image_ids, model, quality = 'auto', size = 'auto' }, runnableConfig) => {
+      // Use provided model or fall back to defaultModel
+      const selectedModel = model || defaultModel;
+      logger.info('[ImageGenOAI] Editing image');
+      logger.info('[ImageGenOAI] Selected model: ' + selectedModel);
+      logger.info('[ImageGenOAI] Prompt: ' + prompt);
+      logger.info('[ImageGenOAI] Image Count: ' + image_ids?.length);
       if (!prompt) {
         throw new Error('Missing required field: prompt');
       }
@@ -240,7 +256,7 @@ Error Message: ${error.message}`);
       }
 
       const formData = new FormData();
-      formData.append('model', 'gpt-image-1');
+      formData.append('model', selectedModel);
       formData.append('prompt', replaceUnwantedChars(prompt));
       // TODO: `mask` support
       // TODO: more than 1 image support
@@ -393,7 +409,7 @@ Error Message: ${error.message}`);
         ];
         return [textResponse, { content, file_ids }];
       } catch (error) {
-        const message = '[image_edit_oai] Problem editing the image:';
+        const message = '[ImageGenOAI] Problem editing the image:';
         logAxiosError({ error, message });
         return returnValue(`Something went wrong when trying to edit the image. The OpenAI API may be unavailable:
 Error Message: ${error.message || 'Unknown error'}`);

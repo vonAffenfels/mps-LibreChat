@@ -35,14 +35,15 @@ function createToolLoader(signal) {
    * @param {string} params.provider
    * @param {string} params.model
    * @param {AgentToolResources} params.tool_resources
+   * @param {Array<Record<string, unknown>>} [params.tool_kwargs]
    * @returns {Promise<{
    * tools: StructuredTool[],
    * toolContextMap: Record<string, unknown>,
    * userMCPAuthMap?: Record<string, Record<string, string>>
    * } | undefined>}
    */
-  return async function loadTools({ req, res, agentId, tools, provider, model, tool_resources }) {
-    const agent = { id: agentId, tools, provider, model };
+  return async function loadTools({ req, res, agentId, tools, provider, model, tool_resources, tool_kwargs }) {
+    const agent = { id: agentId, tools, provider, model, tool_kwargs };
     try {
       return await loadAgentTools({
         req,

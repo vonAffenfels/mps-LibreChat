@@ -128,6 +128,7 @@ const initializeAgent = async ({
     tools: agent.tools,
     model: agent.model,
     tool_resources,
+    tool_kwargs: agent.tool_kwargs,
   })) ?? {};
 
   const { getOptions, overrideProvider } = getProviderConfig({ provider, appConfig });

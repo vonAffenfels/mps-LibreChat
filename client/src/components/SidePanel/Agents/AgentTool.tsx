@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useUpdateUserPluginsMutation } from 'librechat-data-provider/react-query';
 import {
   OGDialog,
@@ -25,10 +25,13 @@ export default function AgentTool({
   const localize = useLocalize();
   const { showToast } = useToastContext();
   const updateUserPlugins = useUpdateUserPluginsMutation();
-  const { getValues, setValue } = useFormContext<AgentForm>();
+  const { control, getValues, setValue } = useFormContext<AgentForm>();
 
   const [isFocused, setIsFocused] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+
+  // Watch tool_kwargs to react to form changes
+  const toolKwargs = useWatch({ control, name: 'tool_kwargs' }) || [];
 
   if (!regularTools) {
     return null;
@@ -58,10 +61,47 @@ export default function AgentTool({
     }
   };
 
+  // Get current tool_kwargs for image_gen_oai
+  const imageGenConfig = toolKwargs.find((kwargs: any) => kwargs?.tool === 'image_gen_oai');
+  const [selectedModel, setSelectedModel] = useState<string>(
+    imageGenConfig?.model || 'gpt-image-1',
+  );
+
+  // Sync selectedModel with tool_kwargs when form is loaded/reset
+  useEffect(() => {
+    if (tool === 'image_gen_oai') {
+      const currentConfig = toolKwargs.find((kwargs: any) => kwargs?.tool === 'image_gen_oai');
+      const modelFromKwargs = currentConfig?.model;
+      if (modelFromKwargs && modelFromKwargs !== selectedModel) {
+        setSelectedModel(modelFromKwargs);
+      }
+    }
+  }, [tool, toolKwargs, selectedModel]);
+
+  // Update tool_kwargs when model changes
+  useEffect(() => {
+    if (tool === 'image_gen_oai') {
+      const currentKwargs = getValues('tool_kwargs') || [];
+      const otherKwargs = currentKwargs.filter((kwargs: any) => kwargs?.tool !== 'image_gen_oai');
+      const newKwargs = [
+        ...otherKwargs,
+        {
+          tool: 'image_gen_oai',
+          model: selectedModel,
+        },
+      ];
+      setValue('tool_kwargs', newKwargs);
+    }
+  }, [selectedModel, tool, getValues, setValue]);
+
+  const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedModel(e.target.value);
+  };
+
   return (
     <OGDialog>
       <div
-        className="group relative flex w-full items-center gap-1 rounded-lg p-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/50"
+        className="group relative flex w-full flex-col gap-2 rounded-lg p-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/50"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onFocus={() => setIsFocused(true)}
@@ -72,43 +112,63 @@ export default function AgentTool({
           }
         }}
       >
-        <div className="flex grow items-center">
-          {currentTool.icon && (
-            <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
-              <div
-                className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-center bg-no-repeat dark:bg-white/20"
-                style={{
-                  backgroundImage: `url(${currentTool.icon})`,
-                  backgroundSize: 'cover',
-                }}
-              />
+        <div className="flex w-full items-center gap-1">
+          <div className="flex grow items-center">
+            {currentTool.icon && (
+              <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
+                <div
+                  className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-center bg-no-repeat dark:bg-white/20"
+                  style={{
+                    backgroundImage: `url(${currentTool.icon})`,
+                    backgroundSize: 'cover',
+                  }}
+                />
+              </div>
+            )}
+            <div
+              className="grow px-2 py-1.5"
+              style={{ textOverflow: 'ellipsis', wordBreak: 'break-all', overflow: 'hidden' }}
+            >
+              {currentTool.name}
             </div>
-          )}
-          <div
-            className="grow px-2 py-1.5"
-            style={{ textOverflow: 'ellipsis', wordBreak: 'break-all', overflow: 'hidden' }}
-          >
-            {currentTool.name}
           </div>
+
+          <OGDialogTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                'flex h-7 w-7 items-center justify-center rounded transition-all duration-200',
+                'hover:bg-gray-200 dark:hover:bg-gray-700',
+                'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
+                'focus:opacity-100',
+                isHovering || isFocused ? 'opacity-100' : 'pointer-events-none opacity-0',
+              )}
+              aria-label={`Delete ${currentTool.name}`}
+              tabIndex={0}
+              onFocus={() => setIsFocused(true)}
+            >
+              <TrashIcon className="h-4 w-4" />
+            </button>
+          </OGDialogTrigger>
         </div>
 
-        <OGDialogTrigger asChild>
-          <button
-            type="button"
-            className={cn(
-              'flex h-7 w-7 items-center justify-center rounded transition-all duration-200',
-              'hover:bg-gray-200 dark:hover:bg-gray-700',
-              'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
-              'focus:opacity-100',
-              isHovering || isFocused ? 'opacity-100' : 'pointer-events-none opacity-0',
-            )}
-            aria-label={`Delete ${currentTool.name}`}
-            tabIndex={0}
-            onFocus={() => setIsFocused(true)}
-          >
-            <TrashIcon className="h-4 w-4" />
-          </button>
-        </OGDialogTrigger>
+        {/* Model selection for image_gen_oai */}
+        {tool === 'image_gen_oai' && (
+          <div className="flex flex-col gap-1 px-2 pb-1">
+            <label htmlFor="image-model-select" className="text-xs text-text-secondary">
+              {localize('com_ui_model')}
+            </label>
+            <select
+              id="image-model-select"
+              value={selectedModel}
+              onChange={handleModelChange}
+              className="rounded border border-border-light bg-surface-secondary px-2 py-1 text-sm focus:border-ring-primary focus:outline-none focus:ring-2 focus:ring-ring-primary"
+            >
+              <option value="gpt-image-1">gpt-image-1</option>
+              <option value="gpt-image-1-mini">gpt-image-1-mini</option>
+            </select>
+          </div>
+        )}
       </div>
       <OGDialogTemplate
         showCloseButton={false}

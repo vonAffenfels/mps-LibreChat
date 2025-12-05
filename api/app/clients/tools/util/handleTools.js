@@ -209,6 +209,19 @@ const loadTools = async ({
       if (toolContext) {
         toolContextMap.image_edit_oai = toolContext;
       }
+
+      // Extract defaultModel from tool_kwargs if configured
+      let defaultModel = undefined;
+      if (agent?.tool_kwargs && Array.isArray(agent.tool_kwargs)) {
+        const imageGenConfig = agent.tool_kwargs.find((kwargs) => kwargs?.tool === 'image_gen_oai');
+        if (imageGenConfig?.model) {
+          defaultModel = imageGenConfig.model;
+        }
+      }
+      logger.info(
+        `[handleTools] image_gen_oai - hasAgent: ${!!agent}, hasToolKwargs: ${!!agent?.tool_kwargs}, toolKwargs: ${JSON.stringify(agent?.tool_kwargs)}, defaultModel: ${defaultModel}`
+      );
+
       return createOpenAIImageTools({
         ...authValues,
         isAgent: !!agent,
@@ -216,6 +229,7 @@ const loadTools = async ({
         imageOutputType,
         fileStrategy,
         imageFiles,
+        defaultModel,
       });
     },
   };

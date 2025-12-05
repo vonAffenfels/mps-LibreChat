@@ -72,6 +72,7 @@ export function composeAgentUpdatePayload(data: AgentForm, agent_id?: string | n
     recursion_limit,
     category,
     support_contact,
+    tool_kwargs,
     avatar_action: avatarActionState,
   } = data;
 
@@ -97,6 +98,7 @@ export function composeAgentUpdatePayload(data: AgentForm, agent_id?: string | n
       recursion_limit,
       category,
       support_contact,
+      tool_kwargs,
       ...(shouldResetAvatar ? { avatar: null } : {}),
     },
     provider,
