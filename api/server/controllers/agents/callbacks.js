@@ -374,7 +374,25 @@ function createToolEndCallback({ req, res, artifactPromises }) {
         const { url } = part.image_url;
         artifactPromises.push(
           (async () => {
-            const filename = `${output.name}_${output.tool_call_id}_img_${nanoid()}`;
+            // Remove __thought__ data from tool_call_id (from OpenAI reasoning models)
+            // OpenAI appends encrypted reasoning data to tool_call_ids, which can exceed
+            // filesystem limits (255 chars). Split at __thought__ and take only the actual ID.
+            const sanitizedToolCallId = output.tool_call_id?.split('__thought__')[0] || 'unknown';
+            const shortId = nanoid();
+            let filename = `${output.name}_${sanitizedToolCallId}_img_${shortId}`;
+
+            // Ensure filename doesn't exceed filesystem limit (255 chars)
+            // Reserve 15 chars for extension (.png, .webp, .jpeg, etc.)
+            const maxFilenameLength = 240;
+            if (filename.length > maxFilenameLength) {
+              const originalLength = filename.length;
+              filename = filename.substring(0, maxFilenameLength);
+              logger.warn(
+                `[callbacks.js] Image filename truncated from ${originalLength} to ${maxFilenameLength} chars`,
+                { tool_call_id: output.tool_call_id, sanitized_id: sanitizedToolCallId }
+              );
+            }
+
             const file_id = output.artifact.file_ids?.[i];
             const file = await saveBase64Image(url, {
               req,
